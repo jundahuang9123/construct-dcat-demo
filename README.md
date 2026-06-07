@@ -40,7 +40,7 @@ profile/
 catalog/
   example-catalog.ttl         # 8 datasets annotated with the profile + IFC hierarchy slice
 tests/
-  q_baseline.rq               # baseline DCAT keyword query
+  q_baseline.rq               # baseline DCAT title/keyword query
   q_constructdcat.rq          # Construct-DCAT typed + subclass-aware query
   run_discovery_demo.py       # loads the files, validates with SHACL, runs both queries
 results/
@@ -61,7 +61,7 @@ python tests/run_discovery_demo.py
 The script writes the regenerated table to [`results/results.md`](results/results.md).
 The expected outcome is:
 
-- baseline DCAT keyword search returns `D1, D2, D3`;
+- baseline DCAT free-text search returns `D1, D2, D3`;
 - Construct-DCAT typed/subclass-aware search returns `D1, D5, D8`;
 - On this small constructed example, the Construct-DCAT query returns exactly the three
   relevant datasets, so precision, recall, and F1 are all `1.00` — a property of this
@@ -91,18 +91,24 @@ anchoring without blocking the discovery comparison.
 
 ## How discovery differs
 
-**Baseline DCAT/DCAT-AP** can only match free-text `dcat:keyword`:
+**Baseline DCAT/DCAT-AP** can only match free text in `dct:title` or
+`dcat:keyword`:
 
 ```sparql
-SELECT ?d WHERE {
-  ?d a dcat:Dataset ; dcat:keyword ?k .
-  FILTER(CONTAINS(LCASE(STR(?k)), "wall"))
+PREFIX dcat: <http://www.w3.org/ns/dcat#>
+PREFIX dct:  <http://purl.org/dc/terms/>
+SELECT ?d ?matchedText WHERE {
+  ?d a dcat:Dataset .
+  { ?d dct:title ?matchedText . }
+  UNION
+  { ?d dcat:keyword ?matchedText . }
+  FILTER(CONTAINS(LCASE(STR(?matchedText)), "wall"))
 }
 ```
 
 This matches one true wall (D1) but wrongly returns D2 (a wall *schedule*) and D3 (a
 wall-*mounted* sensor), and **misses D5 and D8** — real IFC wall subtypes whose keywords
-never contain the string "wall".
+and titles never contain the string "wall".
 
 **Construct-DCAT** uses typed links and subclass reasoning over the IFC hierarchy:
 

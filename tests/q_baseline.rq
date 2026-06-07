@@ -1,6 +1,11 @@
 PREFIX dcat: <http://www.w3.org/ns/dcat#>
-# Baseline DCAT/DCAT-AP discovery: best a consumer can do is match free-text keywords.
-SELECT ?d WHERE {
-  ?d a dcat:Dataset ; dcat:keyword ?k .
-  FILTER(CONTAINS(LCASE(STR(?k)), "wall"))
+PREFIX dct:  <http://purl.org/dc/terms/>
+# Baseline DCAT/DCAT-AP discovery: best a consumer can do is match free text
+# (title or keyword) against the query term.
+SELECT ?d ?matchedText WHERE {
+  ?d a dcat:Dataset .
+  { ?d dct:title ?matchedText . }
+  UNION
+  { ?d dcat:keyword ?matchedText . }
+  FILTER(CONTAINS(LCASE(STR(?matchedText)), "wall"))
 }

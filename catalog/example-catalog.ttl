@@ -57,7 +57,7 @@ ex:D4 a cx:BIMDataset ;
 
 # D5 — TRUE: an IFC wall SUBTYPE; keyword never says "wall"
 ex:D5 a cx:BIMDataset ;
-    dct:title "Standard-case walls, Building B" ;
+    dct:title "Standard-case partition layout, Building B" ;
     dcat:keyword "partition elements" ;
     cx:describesAssetType ifc:IfcWallStandardCase ;
     cx:usesOntology bot: .
@@ -75,7 +75,7 @@ ex:D7 a dcat:Dataset ;
 
 # D8 — TRUE: another IFC wall SUBTYPE; keyword never says "wall"
 ex:D8 a cx:BIMDataset ;
-    dct:title "Elemented walls, Building C facade" ;
+    dct:title "Elemented facade buildup, Building C" ;
     dcat:keyword "facade buildup" ;
     cx:describesAssetType ifc:IfcWallElementedCase ;
     cx:usesOntology bot: .
